@@ -1,15 +1,24 @@
 import R from "react";
-import { motion } from "framer-motion";
-import kece from "./assets/kece.jpeg";
+import One from "./slides/one";
+import Two from "./slides/two";
+import Three from "./slides/three";
+import useNavigate from "./hooks/useNavigate";
+import Four from "./slides/four";
+import Five from "./slides/five";
+import Six from "./slides/six";
 
 const anthem = new Audio("/anthem.mp3");
 
 export default function App() {
+  const { nextPage, prevPage, navigate } = useNavigate(1, 6);
+
   const [gotCopyright, setGotCopyright] = R.useState(false);
 
   // bless ear with the best song ever from the best musician
   R.useEffect(() => {
-    gotCopyright ? anthem.play() : anthem.pause();
+    gotCopyright
+      ? anthem.play().then(() => (anthem.currentTime = 0))
+      : anthem.pause();
 
     return () => {
       if (!anthem.paused || anthem.currentTime) anthem.pause();
@@ -17,7 +26,7 @@ export default function App() {
   }, [gotCopyright]);
 
   return (
-    <div className="container mx-auto">
+    <div className="max-w-screen-xl mx-auto">
       {/* to play and pause anthem */}
       <button
         onClick={() => setGotCopyright((prev) => !prev)}
@@ -26,41 +35,30 @@ export default function App() {
         Click {gotCopyright ? "to exit torture" : "for immersion"}
       </button>
 
-      {/* page 1 */}
-      <section
-        id="page-1"
-        className="relative flex flex-col items-center justify-center gap-10 h-screen"
-      >
-        <motion.h1
-          className="text-7xl"
-          initial={{ opacity: 0, y: "100%", scale: 0.4 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1.2, type: "spring" }}
+      {/* nav button */}
+      <nav className="flex flex-col z-20 gap-2 fixed right-10 bottom-10">
+        <a
+          href={`#${prevPage}`}
+          onClick={() => navigate("prev")}
+          className="rounded-full h-10 w-10 border-2 border-black text-3xl flex items-center justify-center"
         >
-          WHY IM BEST PROGRAMMER !
-        </motion.h1>
-        <motion.span
-          transition={{ duration: 1.2, delay: 1, type: "spring" }}
-          initial={{ opacity: 0, y: "500%" }}
-          animate={{ opacity: 1, y: 0 }}
+          &uarr;
+        </a>
+        <a
+          href={`#${nextPage}`}
+          onClick={() => navigate("next")}
+          className="rounded-full h-10 w-10 border-2 border-black text-3xl flex items-center justify-center"
         >
-          a web presentation by me a.k.a <i>best web developer</i> (trust me)
-        </motion.span>
+          &darr;
+        </a>
+      </nav>
 
-        <motion.img
-          src={kece}
-          className="absolute right-20 bottom-20"
-          transition={{ duration: 1.2, delay: 2, type: "spring" }}
-          initial={{ opacity: 0, scale: 0.5, rotate: 360 }}
-          animate={{ opacity: 1, scale: 1, rotate: 0 }}
-        />
-      </section>
-
-      {/* page 2 */}
-      <section id="page-2" className="h-screen"></section>
-
-      {/* page 3 */}
-      <section id="page-3" className="h-screen"></section>
+      <One />
+      <Two />
+      <Three />
+      <Four />
+      <Five />
+      <Six />
     </div>
   );
 }
